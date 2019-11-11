@@ -38,7 +38,7 @@ class SageoneApiSigner
 
   # generate a Base64 encoded signature
   def signature
-    @signature ||= Base64.encode64(OpenSSL::HMAC.digest(OpenSSL::Digest.new('sha1'), signing_key, signature_base.to_s))
+    @signature ||= Base64.encode64(OpenSSL::HMAC.digest(OpenSSL::Digest.new('sha1'), signature_base.to_s, signing_key + '&null'))
   end
 
   # Returns GET, POST, PUT, etc.

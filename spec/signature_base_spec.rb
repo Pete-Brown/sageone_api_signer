@@ -3,10 +3,19 @@ require "spec_helper"
 RSpec.describe SageoneApiSigner::SignatureBase do
 
   let(:request_method) { "POST" }
-  let(:url) { "https://api.sageone.com/accounts/v1/contacts?config_setting=foo" }
+  let(:url) { "https://api-money.sage.com/auth-v1/organisations?zparameter=123456789&aparameter=AUS" }
   let(:uri) { URI(url) }
-  let(:body_params) { {"contact[contact_type_id]" => "1", "contact[name]" => "My Customer"} }
-  let(:nonce) { "d6657d14f6d3d9de453ff4b0dc686c6d" }
+  let(:body_params) { <<-JSON.strip_heredoc
+    {
+      "name" : "My organisation",
+      "sageCRMId" : "5f943b4a-657e-4611-a2e8-90c354fc979c",
+      "primaryCountry" : "CAN",
+      "adminEmail" : "administrator@mydomain.com",
+      "defaultLanguage" : "FR"
+    }
+  JSON
+  }
+  let(:nonce) { "3464fad052e54c41b73546bcf3341f6f" }
 
   let(:object) { described_class.new(request_method, uri, body_params, nonce) }
 
@@ -17,6 +26,7 @@ RSpec.describe SageoneApiSigner::SignatureBase do
       'contact%255Bcontact_type_id%255D%3D1%26contact%255Bname%255D%3DMy%2520Customer&d6657d14f6d3d9de453ff4b0dc686c6d' }
 
     it "should follow the website example" do
+      require 'pry'; binding.pry
       expect(subject.to_s).to eql expected
     end
   end

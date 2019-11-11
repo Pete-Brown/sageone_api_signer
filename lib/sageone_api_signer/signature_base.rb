@@ -28,8 +28,12 @@ class SageoneApiSigner
 
     def parameter_string
       @parameter_string ||= (
-        Hash[url_params.merge(body_params).sort].to_query.gsub('+', '%20')
+        url_params.merge(encoded_body_params).sort.to_query.gsub('+', '%20')
       )
+    end
+
+    def encoded_body_params
+      Base64.encode64(body_params)
     end
 
     # Return the base URL without query string and fragment
@@ -44,7 +48,7 @@ class SageoneApiSigner
     end
 
     def url_params
-      @url_params ||= Hash[URI::decode_www_form(uri.query || '')]
+      @url_params ||= URI::decode_www_form(uri.query || '')
     end
 
     def uri_port_string
